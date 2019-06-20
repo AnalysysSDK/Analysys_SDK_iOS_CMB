@@ -44,6 +44,7 @@ iOS SDK 用于 iOS 原生 App
 3. 勾选 `Copy items if needed`、`Create groups` - `Add` 完成添加类库
 4. 添加`AnalysysAgent.bundle`资源文件：`Targets`->`ProjectName` -> `Build Phases` -> `Copy Bundle Resources` -> 添加文件
 
+<!--## CocoaPods集成
 * 安装CocoaPods
 * 工程目录下创建`Podfile`文件，并添加`pod 'AnalysysAgent'`，示例如下：
 
@@ -57,7 +58,15 @@ end
 ```
 * 关闭Xcode，在工程目录下执行`pod install`或`pod install --verbose --no-repo-update`，完成后打开xxx.xcworkspace工程
 
+其他功能
 
+| pod代码 | 功能说明 | 版本支持 |
+| --- | --- | --- |
+| pod 'AnalysysAgent', :subspecs => ['Visual'] | 集成SDK同时集成可视化模块 | 4.2.0及以后版本支持 |
+| pod 'AnalysysAgent', :subspecs => ['Push'] | 集成SDK同时集成推送模块 | 4.2.0及以后版本支持 |
+| pod 'AnalysysAgent', :subspecs => ['Visual','Push'] | 集成SDK同时集成可视化及推送模块 | 4.2.0及以后版本支持 |
+| pod 'AnalysysAgent', :subspecs => ['Visual','Push','CMB'] | 集成SDK同时集成可视化、推送及定制化模块 | 4.2.0及以后版本支持 |
+-->
 ## Xcode配置
 * 若使用手动集成，请添加如下依赖框架：
 选择工程 - `Targets` - “项目名称” - `Build Phase` - `Link Binary With Libraries` 依赖库如下：
@@ -123,7 +132,7 @@ end
 
     //  设置key，77a52s552c892bn442v721为样例数据，请根据实际情况替换相应内容
     //  AnalysysAgent 配置信息
-    AnalysysConfig.appKey = @"appkey";
+    AnalysysConfig.appKey = @"77a52s552c892bn442v721";
     // 设置渠道
     AnalysysConfig.channel = @"App Store";
     // 设置追踪新用户的首次属性
@@ -314,7 +323,7 @@ AnalysysAgent.setIgnoredAutomaticCollectionControllers(["packageName.NextViewCon
 ```
 
 * event：事件名称，以字母或 `$` 开头，只能包含字母、数字、下划线和 `$`，字母不区分大小写，`$` 开头为预置事件/属性，最大长度 99字符，不支持乱码和中文
-* properties：自定义属性，用于对事件描述。properties最多包含100对，且 key 以字母或 `$` 开头，只能包含字母、数字、下划线和 `$`，字母不区分大小写，`$` 开头为预置事件/属性，key长度 1 - 125 字符，不支持乱码和中文；value 支持类型：`NSString`/`NSNumber`/`NSArray<NSString *>`/`NSSet<NSString *>`/`NSDate`/`NSURL`，若为字符串，取值长度为1-255个字符
+* properties：自定义属性，用于对事件描述。properties最多包含100对，且 key 以字母或 `$` 开头，只能包含字母、数字、下划线和 `$`，字母不区分大小写，`$` 开头为预置事件/属性，key长度 1 - 99 字符，不支持乱码和中文；value 支持类型：`NSString`/`NSNumber`/`NSArray<NSString *>`/`NSSet<NSString *>`/`NSDate`/`NSURL`，若为字符串，取值长度为1-255个字符
 
 示例：
 
@@ -420,7 +429,7 @@ let distinctID = AnalysysAgent.getDistinctId() as String
 约束条件如下：
 * <h6 id="userPropertyKey">属性名称</h6>
 
-    以字母或`$`开头，包含字母、数字、下划线和`$`，字母不区分大小写，`$`开头为预置事件/属性，取值长度 1 - 125 字符，不支持乱码和中文
+    以字母或`$`开头，包含字母、数字、下划线和`$`，字母不区分大小写，`$`开头为预置事件/属性，取值长度 1 - 99 字符，不支持乱码和中文
 
 * <h6 id="userPropertyValue">属性值</h6>
 
@@ -615,7 +624,7 @@ AnalysysAgent.profileDelete()
 
 * <h6 id="GeneralPNameLimit">属性名称</h6>
 
-    以字母或`$`开头，只能包含字母、数字、下划线和`$`，字母不区分大小写，`$`开头为预置事件/属性，取值长度 1 - 125 字符，不支持乱码和中文
+    以字母或`$`开头，只能包含字母、数字、下划线和`$`，字母不区分大小写，`$`开头为预置事件/属性，取值长度 1 - 99 字符，不支持乱码和中文
 
 * <h6 id="GeneralPValueLimit">属性值</h6>
 
@@ -745,7 +754,7 @@ AnalysysAgent.getSuperProperties()
 ## SDK 发送策略
 ### 设置上传间隔时间
 
-上传间隔时间设置，在 debug 模式关闭且同时设置`setMaxEventSize:`接口后生效。当事件触发间隔时间大于等于设置时间，则上传数据；默认 SDK 上传时间隔为 15s，设置后以设置为准，接口如下：
+上传间隔时间设置，在 debug 模式关闭后生效。默认数据为触发实时上传，建议设置上传时间隔为 15s，并需要与`setMaxEventSize:`接口配套使用。接口如下：
 
 ```objectivec
 + (void)setIntervalTime:(NSInteger)flushInterval;
@@ -767,7 +776,7 @@ AnalysysAgent.setIntervalTime(10)
 
 ### 设置事件最大上传条数
 
-上传条数设置，在 debug 模式关闭且同时设置`setIntervalTime:`接口后生效；当数据库内事件条数大于设置条数则上传数据，默认上传的条数为 10条。接口如下：
+上传条数设置，在 debug 模式关闭后生效；当默认数据为触发实时上传，建议设置上传的条数为 10条。 并需要与`setIntervalTime:`接口配套使用接口。接口如下：
 
 ```objectivec
 + (void)setMaxEventSize:(NSInteger)size;
@@ -1350,4 +1359,3 @@ AnalysysAgent.setPushProvider(.jiGuang, pushID: "191e35f7e01617e5181")
     }
 }
 ```
-
