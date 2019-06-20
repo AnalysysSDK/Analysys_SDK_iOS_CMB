@@ -8,7 +8,7 @@
 
 
 // ********************************
-// ***** 当前 SDK 版本号：4.3.2 *****
+// ***** 当前 SDK 版本号：4.3.3 *****
 // ********************************
 
 #import <Foundation/Foundation.h>
@@ -29,10 +29,12 @@ typedef NS_ENUM(NSInteger, AnalysysDebugMode) {
 /**
  数据上传加密类型
  
- - AnalysysEncryptAES: AES加密
+ - AnalysysEncryptAES: AES ECB加密
+ - AnalysysEncryptAESCBC128: AES CBC加密
  */
 typedef NS_ENUM(NSInteger, AnalysysEncryptType) {
     AnalysysEncryptAES = 1,
+    AnalysysEncryptAESCBC128 = 2
 };
 
 /**
@@ -98,6 +100,13 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
  默认为 YES
  */
 @property (nonatomic, assign) BOOL autoProfile;
+
+/**
+ 是否允许渠道追踪
+ 
+ 默认为 YES
+ */
+@property (nonatomic, assign) BOOL autoInstallation;
 
 /**
  数据上传加密类型
@@ -191,7 +200,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
 /**
  设置上传间隔时间，单位：秒
  
- 仅AnalysysDebugOff模式或非WiFi环境下生效
+ 仅AnalysysDebugOff模式
  
  @param flushInterval 时间间隔(>=1)
  */
@@ -200,7 +209,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
 /**
  数据累积"size"条数后触发上传
  
- 仅AnalysysDebugOff模式或非WiFi环境下生效
+ 仅AnalysysDebugOff模式
  
  @param size 数据条数(>=1)
  */
@@ -238,7 +247,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
  添加事件及附加属性
  
  @param event 事件标识，同 track: 接口
- @param properties 自定义参数。key：同track:接口事件标识限制，最大长度是125字符；value：允许添加以下类型：NSString/NSNumber/NSArray<NSString*>/NSSet<NSString*>/NSDate/NSURL；
+ @param properties 自定义参数。key：同track:接口事件标识限制，最大长度是99字符；value：允许添加以下类型：NSString/NSNumber/NSArray<NSString*>/NSSet<NSString*>/NSDate/NSURL；
  */
 + (void)track:(NSString *)event properties:(NSDictionary *)properties;
 
@@ -294,7 +303,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
  此部分属性将在所有触发事件中携带
  
  约束信息：
- 属性名：必须以字母或'$'开头，只能包含：字母、数字、下划线和$，字母不区分大小写，最大长度是125字符，不支持乱码和中文
+ 属性名：必须以字母或'$'开头，只能包含：字母、数字、下划线和$，字母不区分大小写，最大长度是 99 字符，不支持乱码和中文
  
  属性值：必须为以下类型：NSString/NSNumber/NSArray<NSString*>/NSSet<NSString*>/NSDate/NSURL
  
@@ -313,7 +322,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
  
  value必须为以下类型：NSString/NSNumber/NSArray<NSString*>/NSSet<NSString*>/NSDate/NSURL。
  
- @param superPropertyName 最大长度是125字符
+ @param superPropertyName 最大长度是 99 字符
  @param superPropertyValue 属性值
  */
 + (void)registerSuperProperty:(NSString *)superPropertyName value:(id)superPropertyValue;
@@ -372,7 +381,7 @@ typedef NS_ENUM(NSInteger, AnalysysPushProvider) {
 
 /**
  用户属性若无特殊说明，具有以下约束：
- 属性名：必须以字母或'$'开头，只能包含：字母、数字、下划线和$，字母不区分大小写，最大长度是125字符，不支持乱码和中文
+ 属性名：必须以字母或'$'开头，只能包含：字母、数字、下划线和$，字母不区分大小写，最大长度是 99 字符，不支持乱码和中文
  属性值：必须为以下类型：NSString/NSNumber/NSArray<NSString*>/NSSet<NSString*>/NSDate/NSURL
  最多允许100个键值对
  */
